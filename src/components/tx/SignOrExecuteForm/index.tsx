@@ -122,14 +122,14 @@ const SignOrExecuteForm = ({
     setIsSubmittable(false)
     setSubmitError(undefined)
 
-    try {
-      await (willExecute ? onExecute() : onSign())
-    } catch (err) {
-      logError(Errors._804, (err as Error).message)
-      setIsSubmittable(true)
-      setSubmitError(err as Error)
-      return
-    }
+    //try {
+    //  await (willExecute ? onExecute() : onSign())
+    //} catch (err) {
+    //  logError(Errors._804, (err as Error).message)
+    //  setIsSubmittable(true)
+    //  setSubmitError(err as Error)
+    //  return
+    //}
 
     onSubmit()
   }

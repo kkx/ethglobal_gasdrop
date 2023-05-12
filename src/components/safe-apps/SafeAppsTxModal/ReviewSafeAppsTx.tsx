@@ -12,7 +12,7 @@ import type { SafeAppsTxParams } from '.'
 import { trackSafeAppTxCount } from '@/services/safe-apps/track-app-usage-count'
 import { getTxOrigin } from '@/utils/transactions'
 import { ApprovalEditor } from '../../tx/ApprovalEditor'
-import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx } from '@/services/tx/tx-sender'
+import { createMultiSendCallOnlyTx, createTx, dispatchSafeAppsTx, dispatchTxSigning } from '@/services/tx/tx-sender'
 import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Typography } from '@mui/material'
@@ -45,6 +45,22 @@ const ReviewSafeAppsTx = ({
     return tx
   }, [txList])
 
+  const handleSubmitWithAds = async () => {
+    //const { signTx, executeTx, signRelayedTx } = useTxActions()
+    setSubmitError(undefined)
+    if (!safeTx || !onboard) return
+    trackSafeAppTxCount(Number(appId))
+    console.log(1)
+
+    try {
+      const signedTx = await dispatchTxSigning(safeTx, safe.version, onboard, safe.chainId)
+      //const signedTx = await signRelayedTx(safeTx)
+      console.log(signedTx)
+    } catch (error) {
+      console.log(error)
+      setSubmitError(error as Error)
+    }
+  }
   const handleSubmit = async () => {
     setSubmitError(undefined)
     if (!safeTx || !onboard) return
@@ -60,7 +76,12 @@ const ReviewSafeAppsTx = ({
   const origin = useMemo(() => getTxOrigin(app), [app])
 
   return (
-    <SignOrExecuteForm safeTx={safeTx} onSubmit={handleSubmit} error={safeTxError || submitError} origin={origin}>
+    <SignOrExecuteForm
+      safeTx={safeTx}
+      onSubmit={handleSubmitWithAds}
+      error={safeTxError || submitError}
+      origin={origin}
+    >
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />

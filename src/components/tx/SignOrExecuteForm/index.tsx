@@ -112,8 +112,8 @@ const SignOrExecuteForm = ({
       }
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [secondsLeft]);
+    return () => clearInterval(interval)
+  }, [secondsLeft])
 
   useEffect(() => {
     if (relayDone) {
@@ -154,6 +154,7 @@ const SignOrExecuteForm = ({
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
+    // test airstack
     e.preventDefault()
     setSubmitError(undefined)
 

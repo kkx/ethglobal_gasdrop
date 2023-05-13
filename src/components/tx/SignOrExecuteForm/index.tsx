@@ -52,6 +52,9 @@ const SignOrExecuteForm = ({
   // Hooks & variables
   //
   const [shouldExecute, setShouldExecute] = useState<boolean>(true)
+  const [secondsLeft, setSecondsLeft] = useState(0)
+  const [adPlaying, setAdPlaying] = useState<boolean>(false)
+  const [adShown, setAdShown] = useState<boolean>(false)
   const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
@@ -84,6 +87,21 @@ const SignOrExecuteForm = ({
 
   // Synchronize the tx with the safeTx
   useEffect(() => setTx(safeTx), [safeTx])
+
+  // Ad countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (secondsLeft > 0)
+        setSecondsLeft(secondsLeft - 1)
+      else
+        setSecondsLeft(0);
+
+      if (secondsLeft == 1)
+        setAdPlaying(false);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [secondsLeft]);
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -119,8 +137,14 @@ const SignOrExecuteForm = ({
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
-    setIsSubmittable(false)
     setSubmitError(undefined)
+
+    if (!adShown) {
+      setAdShown(true)
+      setAdPlaying(true)
+      setSecondsLeft(10)
+      return
+    }
 
     //try {
     //  await (willExecute ? onExecute() : onSign())
@@ -164,24 +188,15 @@ const SignOrExecuteForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
-        {children}
+        {!adPlaying ? children : ""}
+        {adPlaying && ( 
+          <img style={{width: "100%"}} src="https://thumbs.dreamstime.com/b/marketing-advertising-cloud-word-19099279.jpg"/>
+        )}
+        {!adPlaying && (
+         <DecodedTx tx={tx} txId={txId} />
+        )}
 
-        <DecodedTx tx={tx} txId={txId} />
-
-        {canExecute && <ExecuteCheckbox checked={shouldExecute} onChange={setShouldExecute} disabled={onlyExecute} />}
-
-        <AdvancedParams
-          params={advancedParams}
-          recommendedGasLimit={gasLimit}
-          recommendedNonce={safeTx?.data.nonce}
-          willExecute={willExecute}
-          nonceReadonly={nonceReadonly}
-          onFormSubmit={onAdvancedSubmit}
-          gasLimitError={gasLimitError}
-          willRelay={willRelay}
-        />
-
-        {canRelay && (
+        {!adPlaying && canRelay && (
           <Box
             sx={{
               '& > div': {
@@ -191,20 +206,16 @@ const SignOrExecuteForm = ({
               },
             }}
           >
-            <ExecutionMethodSelector
-              executionMethod={executionMethod}
-              setExecutionMethod={setExecutionMethod}
-              relays={relays}
-            />
           </Box>
         )}
-
+        {!adPlaying && (
         <TxSimulation
           gasLimit={advancedParams.gasLimit?.toNumber()}
           transactions={tx}
           canExecute={canExecute}
           disabled={submitDisabled}
-        />
+        />)
+        }
 
         {/* Warning message and switch button */}
         <WrongChainWarning />
@@ -231,18 +242,16 @@ const SignOrExecuteForm = ({
           willExecute && <UnknownContractError />
         )}
 
-        {/* Info text */}
-        <Typography variant="body2" color="border.main" textAlign="center" mt={3}>
-          You&apos;re about to {txId ? '' : 'create and '}
-          {willExecute ? 'execute' : 'sign'} a transaction and will need to confirm it with your currently connected
-          wallet.
-        </Typography>
-
         {/* Submit button */}
         <CheckWallet allowNonOwner={willExecute}>
           {(isOk) => (
-            <Button variant="contained" type="submit" disabled={!isOk || submitDisabled}>
-              {isEstimating ? 'Estimating...' : 'Submit'}
+            <Button variant="contained" type="submit" disabled={secondsLeft > 0}>
+            {(secondsLeft == 0 && adShown)
+              ? "Submit"
+              : !adShown
+                ? "Watch an Ad to continue" 
+                : secondsLeft + " seconds left"
+            }
             </Button>
           )}
         </CheckWallet>

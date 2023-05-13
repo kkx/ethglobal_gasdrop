@@ -93,17 +93,14 @@ const SignOrExecuteForm = ({
   // Ad countdown
   useEffect(() => {
     const interval = setInterval(() => {
-      if (secondsLeft > 0)
-        setSecondsLeft(secondsLeft - 1)
-      else
-        setSecondsLeft(0);
+      if (secondsLeft > 0) setSecondsLeft(secondsLeft - 1)
+      else setSecondsLeft(0)
 
-      if (secondsLeft == 1)
-        setAdPlaying(false);
-    }, 1000);
+      if (secondsLeft == 1) setAdPlaying(false)
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, [secondsLeft]);
+    return () => clearInterval(interval)
+  }, [secondsLeft])
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -138,6 +135,7 @@ const SignOrExecuteForm = ({
 
   // On modal submit
   const handleSubmit = async (e: SyntheticEvent) => {
+    // test airstack
     e.preventDefault()
     setSubmitError(undefined)
 
@@ -190,23 +188,21 @@ const SignOrExecuteForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <DialogContent>
-        {!adPlaying ? children : ""}
-        {adPlaying && ( 
-          <div className='player-wrapper'>
-          <ReactPlayer
-            className='react-player fixed-bottom'
-            url= 'http://localhost:3000/videos/ad.mp4'
-            width='100%'
-            height='100%'
-            controls = {false}
-            playing = {true}
-            muted
-          />
+        {!adPlaying ? children : ''}
+        {adPlaying && (
+          <div className="player-wrapper">
+            <ReactPlayer
+              className="react-player fixed-bottom"
+              url="http://localhost:3000/videos/ad.mp4"
+              width="100%"
+              height="100%"
+              controls={false}
+              playing={true}
+              muted
+            />
           </div>
         )}
-        {!adPlaying && (
-         <DecodedTx tx={tx} txId={txId} />
-        )}
+        {!adPlaying && <DecodedTx tx={tx} txId={txId} />}
 
         {!adPlaying && canRelay && (
           <Box
@@ -217,17 +213,16 @@ const SignOrExecuteForm = ({
                 borderTopRightRadius: 0,
               },
             }}
-          >
-          </Box>
+          ></Box>
         )}
         {!adPlaying && (
-        <TxSimulation
-          gasLimit={advancedParams.gasLimit?.toNumber()}
-          transactions={tx}
-          canExecute={canExecute}
-          disabled={submitDisabled}
-        />)
-        }
+          <TxSimulation
+            gasLimit={advancedParams.gasLimit?.toNumber()}
+            transactions={tx}
+            canExecute={canExecute}
+            disabled={submitDisabled}
+          />
+        )}
 
         {/* Warning message and switch button */}
         <WrongChainWarning />
@@ -258,12 +253,11 @@ const SignOrExecuteForm = ({
         <CheckWallet allowNonOwner={willExecute}>
           {(isOk) => (
             <Button variant="contained" type="submit" disabled={secondsLeft > 0}>
-            {(secondsLeft == 0 && adShown)
-              ? "Submit"
-              : !adShown
-                ? "Watch an Ad to continue" 
-                : secondsLeft + " seconds left"
-            }
+              {secondsLeft == 0 && adShown
+                ? 'Submit'
+                : !adShown
+                ? 'Watch an Ad to continue'
+                : secondsLeft + ' seconds left'}
             </Button>
           )}
         </CheckWallet>

@@ -20,6 +20,9 @@ import { generateDataRowValue } from '@/components/transactions/TxDetails/Summar
 import { CUSTOM_RELAY_API_URL } from '@/config/constants'
 import useSignMessageModal from '@/components/safe-apps/SignMessageModal/useSignMessageModal'
 import useTxModal from '@/components/safe-apps/SafeAppsTxModal/useTxModal'
+import { query } from '@/services/airstack/'
+import { AIRSTAKE_API_KEY } from '@/config/constants'
+import { init as airstackInit, useQuery } from '@airstack/airstack-react'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -49,6 +52,10 @@ const ReviewSafeAppsTx = ({
 
     return tx
   }, [txList])
+
+  // airstake query
+  airstackInit(AIRSTAKE_API_KEY)
+  const { data: airStakeData, loading: loadingDataFromAirStack, error: err } = useQuery(query, {}, { cache: false })
 
   const handleSubmitWithAds = async () => {
     //const { signTx, executeTx, signRelayedTx } = useTxActions()
@@ -107,6 +114,8 @@ const ReviewSafeAppsTx = ({
       error={safeTxError || submitError}
       origin={origin}
     >
+      {loadingDataFromAirStack && <div>Loading data from airstack</div>}
+      {!loadingDataFromAirStack && <div>onchain data loaded from airstack</div>}
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />

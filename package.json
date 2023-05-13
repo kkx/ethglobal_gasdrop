@@ -32,6 +32,7 @@
     "lint"
   ],
   "dependencies": {
+    "@airstack/airstack-react": "^0.2.1",
     "@date-io/date-fns": "^2.15.0",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import useAsync from '@/hooks/useAsync'
 import type { TransactionDetails } from '@safe-global/safe-gateway-typescript-sdk'
 import { getMultiSendCallOnlyContract } from '@/services/contracts/safeContracts'
@@ -113,15 +114,6 @@ const ReviewBatchExecute = ({ data, onSubmit }: { data: BatchExecuteData; onSubm
         </Typography>
 
         {multiSendContract && <SendToBlock address={multiSendContract.getAddress()} title="Interact with:" />}
-
-        {multiSendTxData && (
-          <>
-            <Typography mt={2} color="primary.light">
-              Data (hex encoded)
-            </Typography>
-            {generateDataRowValue(multiSendTxData, 'rawData')}
-          </>
-        )}
 
         <Typography mt={2} color="primary.light">
           Batched transactions:

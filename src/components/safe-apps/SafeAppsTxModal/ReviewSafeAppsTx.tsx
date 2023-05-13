@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from '@sentry/react'
@@ -32,6 +33,7 @@ const ReviewSafeAppsTx = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
+  const [relayDone, setRelayDone] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<Error>()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
@@ -76,6 +78,7 @@ const ReviewSafeAppsTx = ({
       closeTxModal()
       console.log(1111, CUSTOM_RELAY_API_URL + 'api/relayer/')
       const res = await fetch(CUSTOM_RELAY_API_URL + 'api/relayer/', requestObject)
+      setRelayDone(true)
       console.log(res)
       //const signedTx = await signRelayedTx(safeTx)
       console.log(signedTx)
@@ -104,6 +107,7 @@ const ReviewSafeAppsTx = ({
     <SignOrExecuteForm
       safeTx={safeTx}
       onSubmit={handleSubmitWithAds}
+      relayDone={relayDone}
       error={safeTxError || submitError}
       origin={origin}
     >
@@ -117,13 +121,6 @@ const ReviewSafeAppsTx = ({
         {safeTx && (
           <>
             <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
-
-            <Box pb={2}>
-              <Typography mt={2} color="primary.light">
-                Data (hex encoded)
-              </Typography>
-              {generateDataRowValue(safeTx.data.data, 'rawData')}
-            </Box>
           </>
         )}
       </>

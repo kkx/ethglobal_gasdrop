@@ -1,6 +1,8 @@
+/* eslint-disable */
 import { type ReactElement, type ReactNode, type SyntheticEvent, useEffect, useState } from 'react'
 import { Box, Button, DialogContent, Typography } from '@mui/material'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
+import ReactPlayer from 'react-player'
 
 import useGasLimit from '@/hooks/useGasLimit'
 import ErrorMessage from '@/components/tx/ErrorMessage'
@@ -190,7 +192,17 @@ const SignOrExecuteForm = ({
       <DialogContent>
         {!adPlaying ? children : ""}
         {adPlaying && ( 
-          <img style={{width: "100%"}} src="https://thumbs.dreamstime.com/b/marketing-advertising-cloud-word-19099279.jpg"/>
+          <div className='player-wrapper'>
+          <ReactPlayer
+            className='react-player fixed-bottom'
+            url= 'http://localhost:3000/videos/ad.mp4'
+            width='100%'
+            height='100%'
+            controls = {false}
+            playing = {true}
+            muted
+          />
+          </div>
         )}
         {!adPlaying && (
          <DecodedTx tx={tx} txId={txId} />

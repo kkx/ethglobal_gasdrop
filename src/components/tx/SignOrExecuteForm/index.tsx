@@ -8,6 +8,7 @@ import useGasLimit from '@/hooks/useGasLimit'
 import ErrorMessage from '@/components/tx/ErrorMessage'
 import AdvancedParams, { type AdvancedParameters, useAdvancedParams } from '@/components/tx/AdvancedParams'
 import DecodedTx from '../DecodedTx'
+import useSafeAddress from '@/hooks/useSafeAddress'
 import ExecuteCheckbox from '../ExecuteCheckbox'
 import LinkIcon from '@/public/images/common/link.svg'
 import { logError, Errors } from '@/services/exceptions'
@@ -74,6 +75,7 @@ const SignOrExecuteForm = ({
   const currentChain = useCurrentChain()
   const { signTx, executeTx } = useTxActions()
   const [relays] = useRelaysBySafe()
+  const address = useSafeAddress()
 
   // Check that the transaction is executable
   const isCreation = !txId
@@ -172,8 +174,7 @@ const SignOrExecuteForm = ({
 
     if (relayDone) {
       //Navigate to assets
-      console.log("HAHA")
-      window.location.href = 'http://localhost:3000/balances?safe=matic:0x4fd6Eb55a653038236B18B1dE7736bC15991f2aa'
+      window.location.href = 'http://localhost:3000/balances?safe=matic:' + address
       return
     }
 
@@ -239,7 +240,7 @@ const SignOrExecuteForm = ({
               <p style={{textAlign: "center", fontSize: "25px", color: "lightgreen", paddingRight: "10px"}}>Sponsored transaction completed</p>
             </div>
             <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-              <Link rel="noopener noreferrer" target="_blank" href="#" fontWeight={700}>
+              <Link rel="noopener noreferrer" target="_blank" href={"https://polygonscan.com/address/" + address} fontWeight={700}>
               <SvgIcon component={LinkIcon} inheritViewBox fontSize="small" sx={{ verticalAlign: 'middle', ml: 0.5 }} />
               </Link>
             </div>

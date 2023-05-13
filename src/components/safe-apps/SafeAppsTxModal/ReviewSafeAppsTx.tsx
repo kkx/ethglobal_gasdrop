@@ -53,9 +53,14 @@ const ReviewSafeAppsTx = ({
     return tx
   }, [txList])
 
-  // airstake query
+  // airstack query
+  // using airstack data to to check if the user can be sponsored
   airstackInit(AIRSTAKE_API_KEY)
-  const { data: airStakeData, loading: loadingDataFromAirStack, error: err } = useQuery(query, {}, { cache: false })
+  const {
+    data: airStakeData,
+    loading: loadingDataFromAirStack,
+    error: err,
+  } = useQuery(query, { address: safe.address.value }, { cache: false })
 
   const handleSubmitWithAds = async () => {
     //const { signTx, executeTx, signRelayedTx } = useTxActions()

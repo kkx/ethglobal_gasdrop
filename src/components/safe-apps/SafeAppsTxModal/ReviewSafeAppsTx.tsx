@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -22,7 +22,7 @@ import { CUSTOM_RELAY_API_URL } from '@/config/constants'
 import useSignMessageModal from '@/components/safe-apps/SignMessageModal/useSignMessageModal'
 import useTxModal from '@/components/safe-apps/SafeAppsTxModal/useTxModal'
 import { query } from '@/services/airstack/'
-import { AIRSTAKE_API_KEY } from '@/config/constants'
+import { AIRSTACK_API_KEY } from '@/config/constants'
 import { init as airstackInit, useQuery } from '@airstack/airstack-react'
 
 type ReviewSafeAppsTxProps = {
@@ -41,6 +41,7 @@ const ReviewSafeAppsTx = ({
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
 
+
   const isMultiSend = txList.length > 1
 
   const [safeTx, safeTxError] = useAsync<SafeTransaction | undefined>(async () => {
@@ -57,9 +58,9 @@ const ReviewSafeAppsTx = ({
 
   // airstack query
   // using airstack data to to check if the user can be sponsored
-  airstackInit(AIRSTAKE_API_KEY)
+  airstackInit(AIRSTACK_API_KEY)
   const {
-    data: airStakeData,
+    data: airStackData,
     loading: loadingDataFromAirStack,
     error: err,
   } = useQuery(query, { address: safe.address.value }, { cache: false })
@@ -120,11 +121,10 @@ const ReviewSafeAppsTx = ({
       safeTx={safeTx}
       onSubmit={handleSubmitWithAds}
       relayDone={relayDone}
+      airStackData={airStackData}
       error={safeTxError || submitError}
       origin={origin}
     >
-      {loadingDataFromAirStack && <div>Loading data from airstack</div>}
-      {!loadingDataFromAirStack && <div>onchain data loaded from airstack</div>}
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />

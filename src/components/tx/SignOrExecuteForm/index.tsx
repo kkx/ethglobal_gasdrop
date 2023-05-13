@@ -33,6 +33,7 @@ type SignOrExecuteProps = {
   children?: ReactNode
   error?: Error
   relayDone?: boolean
+  airStackData?: any
   isExecutable?: boolean
   isRejection?: boolean
   onlyExecute?: boolean
@@ -46,6 +47,7 @@ const SignOrExecuteForm = ({
   onSubmit,
   children,
   relayDone = false,
+  airStackData = {},
   onlyExecute = false,
   isExecutable = false,
   isRejection = false,
@@ -60,11 +62,12 @@ const SignOrExecuteForm = ({
   const [secondsLeft, setSecondsLeft] = useState(0)
   const [adPlaying, setAdPlaying] = useState<boolean>(false)
   const [adShown, setAdShown] = useState<boolean>(false)
-  const [isSubmittable, setIsSubmittable] = useState<boolean>(true)
-  const [submitText, setSubmitText] = useState<string>("Watch an Ad to continue")
+  const [isSubmittable, setIsSubmittable] = useState<boolean>(false)
+  const [submitText, setSubmitText] = useState<string>("Analyzing on-chain data")
   const [tx, setTx] = useState<SafeTransaction | undefined>(safeTx)
   const [submitError, setSubmitError] = useState<Error | undefined>()
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [analyzing, setAnalyzing] = useState<boolean>(true)
 
   // Hooks
   const isOwner = useIsSafeOwner()
@@ -120,6 +123,15 @@ const SignOrExecuteForm = ({
       setSubmitText("Go to Assets")
     }
   }, [relayDone]);
+
+  useEffect(() => {
+   if (airStackData !== null) {
+    console.log(airStackData)
+    setAnalyzing(false)
+    setSubmitText("Watch an Ad to continue")
+    setIsSubmittable(true)
+   }
+  }, [airStackData]);
 
   // Estimate gas limit
   const { gasLimit, gasLimitError, gasLimitLoading } = useGasLimit(willExecute ? tx : undefined)
@@ -278,10 +290,10 @@ const SignOrExecuteForm = ({
             <Button variant="contained" type="submit" disabled={!isSubmittable && !relayDone}>
               <div style={{width: "100%"}}>
                 <div style={{position: "absolute", marginRight: "0px"}}>
-                {isSubmitting && !relayDone && <CircularProgress size={20} color={"success"}/>}
+                {(isSubmitting || analyzing) && !relayDone && <CircularProgress size={20} color={"success"}/>}
                 </div>
                 <div style={{display: "block"}}>
-                {isSubmitting 
+                {(isSubmitting || analyzing)
                 ? <span style={{padding: "0px 30px 0px 30px"}}>{submitText}</span>
                 : submitText
                 }

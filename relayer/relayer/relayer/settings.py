@@ -25,7 +25,7 @@ SECRET_KEY = '3o)^l!)$e7367oczif%%c(v4ad#-2xr35%+&2dm)8aqds9*q#d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'api'
 ]
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,6 +54,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'relayer.urls'
+# If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 TEMPLATES = [
     {

@@ -80,6 +80,7 @@ const ReviewSafeAppsSignMessage = ({
   }, [message])
 
   const handleSubmit = async () => {
+    console.log('333')
     setSubmitError(undefined)
     if (!safeTx || !onboard) return
     try {

@@ -25,7 +25,11 @@ class RelayerApiView(APIView):
         if serializer.is_valid():
             serializer.save()
             data = serializer.data
-            data['txHash'] = execSafeTransaction(**data)
+            try:
+                data['txHash'] = str(execSafeTransaction(**data))
+            except:
+                data['txHash'] = ''
+            print(data)
             return Response(data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

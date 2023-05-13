@@ -58,6 +58,9 @@ export enum SafeAppsTag {
   WALLET_CONNECT = 'wallet-connect',
 }
 
+// Custom Relay services
+export const CUSTOM_RELAY_API_URL = process.env.NEXT_CUSTOM_RELAY_API_URL || 'http://127.0.0.1:8000/'
+
 // Safe Gelato relay service
 export const SAFE_RELAY_SERVICE_URL_PRODUCTION =
   process.env.NEXT_PUBLIC_SAFE_RELAY_SERVICE_URL_PRODUCTION || 'https://safe-client-nest.safe.global/v1/relay'

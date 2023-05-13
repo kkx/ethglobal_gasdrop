@@ -17,6 +17,9 @@ import useOnboard from '@/hooks/wallets/useOnboard'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import { Box, Typography } from '@mui/material'
 import { generateDataRowValue } from '@/components/transactions/TxDetails/Summary/TxDataRow'
+import { CUSTOM_RELAY_API_URL } from '@/config/constants'
+import useSignMessageModal from '@/components/safe-apps/SignMessageModal/useSignMessageModal'
+import useTxModal from '@/components/safe-apps/SafeAppsTxModal/useTxModal'
 
 type ReviewSafeAppsTxProps = {
   safeAppsTx: SafeAppsTxParams
@@ -30,6 +33,8 @@ const ReviewSafeAppsTx = ({
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
   const [submitError, setSubmitError] = useState<Error>()
+  const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
+  const [txModalState, openTxModal, closeTxModal] = useTxModal()
 
   const isMultiSend = txList.length > 1
 
@@ -54,9 +59,29 @@ const ReviewSafeAppsTx = ({
 
     try {
       const signedTx = await dispatchTxSigning(safeTx, safe.version, onboard, safe.chainId)
+      let requestData: any = signedTx.data
+      requestData['signatures'] = signedTx.signatures.entries().next().value[1].data
+      requestData['safeAddress'] = safe.address.value
+      console.log(requestData['signatures'])
+      console.log(JSON.stringify(requestData))
+      const requestObject: RequestInit = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      }
+      closeSignMessageModal()
+      closeTxModal()
+      console.log(1111, CUSTOM_RELAY_API_URL + 'api/relayer/')
+      const res = await fetch(CUSTOM_RELAY_API_URL + 'api/relayer/', requestObject)
+      console.log(res)
       //const signedTx = await signRelayedTx(safeTx)
       console.log(signedTx)
+      console.log(requestObject)
     } catch (error) {
+      console.log(error)
       console.log(error)
       setSubmitError(error as Error)
     }

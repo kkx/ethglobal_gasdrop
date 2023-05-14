@@ -4,6 +4,8 @@ This project is built during the Ethglobal Lisbon hackathon. Gasdrop allows user
 
 This repository is a fork of safe wallet interface. For more information please follow check [here](https://github.com/safe-global/safe-wallet-web/).
 
+The project was built and tested using aave and uniswap DApp as you can see in the demo video
+
 ## Additional environment variable
 
 `AIRSTACK_API_KEY` is required to support airstack api.

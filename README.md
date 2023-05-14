@@ -1,6 +1,6 @@
 # <img src="./public/images/logo.png" height="60" valign="middle" alt="Gasdrop" /> Gasdrop
 
-This project is built during the Ethglobal Lisbon hackathon. Gasdrop allows users to interact with dApps without paying gas fees. Instead, they are shown Ads provided by sponsors during the transaction. for more information please refer [here](https://ethglobal.com/showcase?q=gasdrop)
+This project is built during the Ethglobal Lisbon hackathon. Gasdrop allows users to interact with dApps without paying gas fees. Instead, they are shown Ads provided by sponsors during the transaction. for more information please refer [here](https://ethglobal.com/showcase/gasdrop-9oug0)
 
 This repository is a fork of safe wallet interface. For more information please follow check [here](https://github.com/safe-global/safe-wallet-web/).
 

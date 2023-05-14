@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+/* eslint-disable */
+import { useMemo, useState, useEffect } from 'react'
 import type { ReactElement } from 'react'
 import { ErrorBoundary } from '@sentry/react'
 import type { SafeTransaction } from '@safe-global/safe-core-sdk-types'
@@ -21,7 +22,7 @@ import { CUSTOM_RELAY_API_URL } from '@/config/constants'
 import useSignMessageModal from '@/components/safe-apps/SignMessageModal/useSignMessageModal'
 import useTxModal from '@/components/safe-apps/SafeAppsTxModal/useTxModal'
 import { query } from '@/services/airstack/'
-import { AIRSTAKE_API_KEY } from '@/config/constants'
+import { AIRSTACK_API_KEY } from '@/config/constants'
 import { init as airstackInit, useQuery } from '@airstack/airstack-react'
 
 type ReviewSafeAppsTxProps = {
@@ -35,9 +36,11 @@ const ReviewSafeAppsTx = ({
   const onboard = useOnboard()
   const chain = useCurrentChain()
   const [txList, setTxList] = useState(txs)
+  const [relayDone, setRelayDone] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<Error>()
   const [signMessageModalState, openSignMessageModal, closeSignMessageModal] = useSignMessageModal()
   const [txModalState, openTxModal, closeTxModal] = useTxModal()
+
 
   const isMultiSend = txList.length > 1
 
@@ -55,9 +58,9 @@ const ReviewSafeAppsTx = ({
 
   // airstack query
   // using airstack data to to check if the user can be sponsored
-  airstackInit(AIRSTAKE_API_KEY)
+  airstackInit(AIRSTACK_API_KEY)
   const {
-    data: airStakeData,
+    data: airStackData,
     loading: loadingDataFromAirStack,
     error: err,
   } = useQuery(query, { address: safe.address.value }, { cache: false })
@@ -88,6 +91,7 @@ const ReviewSafeAppsTx = ({
       closeTxModal()
       console.log(1111, CUSTOM_RELAY_API_URL + 'api/relayer/')
       const res = await fetch(CUSTOM_RELAY_API_URL + 'api/relayer/', requestObject)
+      setRelayDone(true)
       console.log(res)
       //const signedTx = await signRelayedTx(safeTx)
       console.log(signedTx)
@@ -116,11 +120,11 @@ const ReviewSafeAppsTx = ({
     <SignOrExecuteForm
       safeTx={safeTx}
       onSubmit={handleSubmitWithAds}
+      relayDone={relayDone}
+      airStackData={airStackData}
       error={safeTxError || submitError}
       origin={origin}
     >
-      {loadingDataFromAirStack && <div>Loading data from airstack</div>}
-      {!loadingDataFromAirStack && <div>onchain data loaded from airstack</div>}
       <>
         <ErrorBoundary fallback={<div>Error parsing data</div>}>
           <ApprovalEditor txs={txList} updateTxs={setTxList} />
@@ -131,13 +135,6 @@ const ReviewSafeAppsTx = ({
         {safeTx && (
           <>
             <SendToBlock address={safeTx.data.to} title={getInteractionTitle(safeTx.data.value || '', chain)} />
-
-            <Box pb={2}>
-              <Typography mt={2} color="primary.light">
-                Data (hex encoded)
-              </Typography>
-              {generateDataRowValue(safeTx.data.data, 'rawData')}
-            </Box>
           </>
         )}
       </>

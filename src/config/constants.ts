@@ -90,4 +90,4 @@ export const DISCORD_URL = 'https://chat.safe.global'
 export const TWITTER_URL = 'https://twitter.com/safe'
 
 // AIRSTACK
-export const AIRSTAKE_API_KEY = process.env.NEXT_PUBLIC_AIRSTAKE_API_KEY || '610770ec231849b8af0f52998d85f008'
+export const AIRSTACK_API_KEY = process.env.NEXT_PUBLIC_AIRSTACK_API_KEY || '610770ec231849b8af0f52998d85f008'

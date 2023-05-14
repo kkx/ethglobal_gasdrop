@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { useMemo } from 'react'
@@ -99,14 +100,6 @@ const ReviewSafeAppsSignMessage = ({
           <EthHashInfo address={signMessageAddress} shortAddress={false} showCopyButton hasExplorer />
         </InfoDetails>
 
-        {safeTx && (
-          <Box pb={1}>
-            <Typography mt={2} color="primary.light">
-              Data (hex encoded)
-            </Typography>
-            {generateDataRowValue(safeTx.data.data, 'rawData')}
-          </Box>
-        )}
 
         <Typography my={1}>
           <b>Signing method:</b> <code>{method}</code>

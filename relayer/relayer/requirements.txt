@@ -1,2 +1,4 @@
 django-cors-headers==4.0.0
 djangorestframework==3.13.1
+web3==6.3.0
+django==3.2
